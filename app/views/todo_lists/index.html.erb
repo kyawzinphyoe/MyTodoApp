@@ -1,0 +1,64 @@
+<div class="card-header mb-0 d-flex justify-content-between">
+  <span>
+    <h3 class="mb-0">Todo App</h3>
+    <p class="mb-0"><small><%= @todo_list.percent_complete %>% Complete (<%= @todo_list.completed_items %>/<%= @todo_list.total_items %> Todo Items)</small></p>
+    <div class="progress mb-0">
+      <div class="progress-bar bg-info" role="progressbar" style="width: <%= @todo_list.percent_complete %>%" aria-valuenow="<%= @todo_list.percent_complete %>" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+  </span>
+  <span>
+    <h6>Status :  <small class="badge badge-<%= @todo_list.badge_color%>"><%= @todo_list.status %></small></h6>
+  </span>
+</div>
+
+<div class="card-body">
+    <%= form_with(model: @todo_list) do |form| %>
+    <div class="input-group mb-4">
+        <%= form.text_field :description, class: 'form-control', placeholder: 'Add new item...' %>
+        <div class="input-group-append">
+            <%= form.submit "Add", class: 'btn btn-outline-info' %>
+        </div>
+    </div>
+    <% end %>
+
+    <ul class="list-group">
+        <% @todo_lists.each do |todo_list| %>
+        <% if todo_list.completed %>
+        <li class="list-group-item bg-light">
+            <div class="d-flex justify-content-between">
+                <span class="text-muted">
+                <em><del><%=  todo_list.description %></del></em>
+                </span>
+                <span class="d-flex justify-content-between">
+                  <%= form_for(todo_list) do |form| %>
+                      <%= form.text_field :description, type: 'hidden' %>
+                      <%= form.check_box :completed, :checked => false, :style => 'visibility: hidden' %>
+                      <button class="btn btn-outline-dark btn-sm">
+                        <%= form.submit class: 'fa fa-undo' %>
+                      </button>
+                  <% end %>| 
+                  <%= link_to 'Del', todo_list, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-outline-danger btn-sm' %>
+                </span>
+            </div>
+        </li>
+        <% else %>
+        <li class="list-group-item">
+            <dib class="d-flex justify-content-between">
+                <%= link_to todo_list.description, edit_todo_list_path(todo_list)  %>
+                <span class="d-flex justify-content-between">
+                  <%= form_for(todo_list) do |form| %>
+                      <%= form.text_field :description, type: 'hidden' %>
+                      <%= form.check_box :completed, :checked => true, :style => 'visibility: hidden' %>
+                      <button class="btn btn-outline-info btn-sm">
+                        <%= form.submit class: 'fa fa-check' %>
+                      </button>
+                  <% end %>|
+                  <%= link_to "Del", todo_list, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-outline-danger btn-sm' %>
+                
+                </span>
+            </dib>
+        </li>
+        <% end %>
+        <% end %>
+    </ul>
+</div>
